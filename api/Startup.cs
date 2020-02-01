@@ -27,6 +27,16 @@ namespace api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(
+                option => option.AddPolicy("CorsPolicy",
+                    policy => policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("WWW-Authenticate")
+                        .WithOrigins("http://localhost:3000")
+                        .AllowCredentials()));
+
+            
             services.AddControllers();
 
             services.AddDbContext<ImageStorageContext>(options =>
@@ -47,6 +57,8 @@ namespace api
 
             app.UseHttpsRedirection();
 
+            app.UseCors("CorsPolicy");
+            
             app.UseRouting();
 
             app.UseAuthorization();
