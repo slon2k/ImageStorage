@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using api.DbContexts;
 using api.Entities;
+using api.Models;
+using System.IO;
 
 namespace api.Controllers
 {
@@ -78,8 +80,24 @@ namespace api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Image>> PostImage([FromForm]Image image)
+        public async Task<ActionResult<Image>> PostImage([FromForm]ImageCreateDto imageDto)
         {
+            var image = new Image
+            {
+                ImageName = imageDto.File.FileName,
+                Title = imageDto.Title,
+                Type = imageDto.File.ContentType
+            };
+
+            byte[] imageData = null;
+
+            using (var binaryReader = new BinaryReader(imageDto.File.OpenReadStream()))
+            {
+                imageData = binaryReader.ReadBytes((int)imageDto.File.Length);
+            };
+
+            image.Data = imageData;
+
             _context.Images.Add(image);
             await _context.SaveChangesAsync();
 
