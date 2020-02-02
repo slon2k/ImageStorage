@@ -82,6 +82,11 @@ namespace api.Controllers
         [HttpPost]
         public async Task<ActionResult<Image>> PostImage([FromForm]ImageCreateDto imageDto)
         {
+            if (imageDto.File == null)
+            {
+                return BadRequest("File is empty");
+            }
+
             var image = new Image
             {
                 ImageName = imageDto.File.FileName,
