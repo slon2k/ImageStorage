@@ -34,3 +34,14 @@ export const getImages = async () => {
   }
   return await result.json();
 };
+
+export const deleteImage = async (id) => {
+  const result = await fetch(`${IMAGES_URL}/${id}`, {
+    method: "DELETE",
+    mode: "cors"
+  });
+  if (!result.ok) {
+    console.log(result);
+    throw new Error("Error deleting image");
+  }
+}
